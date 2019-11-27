@@ -1,0 +1,308 @@
+    bot.on("messageCreate", async(msg) => {
+        if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+        let args = msg.content.split(/ +/);
+        let command = args.shift();
+        const msgContent = msg.content.toString().toLowerCase();     
+        if(command.toLowerCase() === prefix+"blackjack") {
+         const toSay = args.join(" ");
+         // Bot Pick
+         let card1 = deck.shuffle().random()
+         findReplace(deck, n => n === card1)
+         let card2 = deck.shuffle().random()
+         findReplace(deck, n => n === card2)
+         console.log(`Card 1: ${card1}\nCard 2: ${card2}\nDeck: ${deck}`)
+         //
+         // User Pick
+         let card3 = deck.shuffle().random()
+         findReplace(deck, n => n === card3)
+         let card4 = deck.shuffle().random()
+         findReplace(deck, n => n === card4)
+         console.log(`Card 3: ${card3}\nCard 4: ${card4}\nDeck: ${deck}`)
+         bot.createMessage(msg.channel.id, {
+            embed: {
+                title: msg.author.username + " vs " + bot.user.username,
+                color: 0x33a1c9,
+                fields: [
+                    {
+                        name: bot.user.username + "'s Hand",
+                        value: "*Hidden...*",
+                        inline: true
+                    },
+                    {
+                        name: msg.author.username + "'s Hand",
+                        value: `${card3} & ${card4}`,
+                        inline: true
+                    },
+                ],
+                footer: {
+                }
+            }
+        });
+        bot.createMessage(msg.channel.id, "Say `hit me` to draw one more card. Do __not__ respond for 10 seconds if you want to stay.")
+        let responses = await msg.channel.awaitMessages(m => m.content === "hit me", { time: 10000, maxMatches: 1 });
+        if(responses.length) {
+            console.log("USER ASKED FOR ANOTHER CARD")
+            let card5 = deck.shuffle().random()
+            findReplace(deck, n => n === card5)
+            let c1 = parseInt(card1)
+            let c2 = parseInt(card2)
+            let botNumber = c1 + c2
+            let c3 = parseInt(card3)
+            let c4 = parseInt(card4)
+            let c5 = parseInt(card5)
+            let userNumber = c3 + c4 + c5
+            if(botNumber > 21) { // If bot is over 21 and user is equal to or less than 21
+                if(userNumber <= 21) {
+                bot.createMessage(msg.channel.id, {
+                    embed: {
+                        title: `${msg.author.username} won!`,
+                        color: 0x33a1c9,
+                        fields: [
+                            {
+                                name: bot.user.username + "'s Hand",
+                                value: `${botNumber}`,
+                                inline: true
+                            },
+                            {
+                                name: msg.author.username + "'s Hand",
+                                value: `${userNumber}`,
+                                inline: true
+                            },
+                        ],
+                        footer: {
+                            }
+                        }
+                    });
+                } else {
+                    if(botNumber <= 21) { //If the user is over 21 and the bot is equal to or less than
+                    bot.createMessage(msg.channel.id, {
+                        embed: {
+                            title: `${bot.user.username} won!`,
+                            color: 0x33a1c9,
+                            fields: [
+                                {
+                                    name: bot.user.username + "'s Hand",
+                                    value: `${botNumber}`,
+                                    inline: true
+                                },
+                                {
+                                    name: msg.author.username + "'s Hand",
+                                    value: `${userNumber}`,
+                                    inline: true
+                                },
+                            ],
+                            footer: {
+                                }
+                            }
+                        });
+                } else {
+                    if(botNumber > 21) { // If user and bot are over 21
+                        if(userNumber > 21) {
+                            bot.createMessage(msg.channel.id, {
+                                embed: {
+                                    title: `Draw!`,
+                                    color: 0x33a1c9,
+                                    fields: [
+                                        {
+                                            name: bot.user.username + "'s Hand",
+                                            value: `${botNumber}`,
+                                            inline: true
+                                        },
+                                        {
+                                            name: msg.author.username + "'s Hand",
+                                            value: `${userNumber}`,
+                                            inline: true
+                                        },
+                                    ],
+                                    footer: {
+                                        }
+                                    }
+                                });
+                        }
+                    } else {
+                        if(userNumber = 21) { // If user's number is 21 and the bot number is less than 21
+                            if(botNumber < 21) {
+                                bot.createMessage(msg.channel.id, {
+                                    embed: {
+                                        title: `${msg.author.username} won!`,
+                                        color: 0x33a1c9,
+                                        fields: [
+                                            {
+                                                name: bot.user.username + "'s Hand",
+                                                value: `${botNumber}`,
+                                                inline: true
+                                            },
+                                            {
+                                                name: msg.author.username + "'s Hand",
+                                                value: `${userNumber}`,
+                                                inline: true
+                                            },
+                                        ],
+                                        footer: {
+                                            }
+                                        }
+                                    });
+                            } else {
+                                if(userNumber < 21) { // If bot's number is 21 and the user number is less than 21
+                                    if(botNumber = 21) {
+                                        bot.createMessage(msg.channel.id, {
+                                            embed: {
+                                                title: `${bot.user.username} won!`,
+                                                color: 0x33a1c9,
+                                                fields: [
+                                                    {
+                                                        name: bot.user.username + "'s Hand",
+                                                        value: `${botNumber}`,
+                                                        inline: true
+                                                    },
+                                                    {
+                                                        name: msg.author.username + "'s Hand",
+                                                        value: `${userNumber}`,
+                                                        inline: true
+                                                    },
+                                                ],
+                                                footer: {
+                                                    }
+                                                }
+                                            });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                }
+            }
+        } else { // If user stays
+            console.log('USER STAYED')
+            let ca1 = parseInt(card1)
+            let ca2 = parseInt(card2)
+            let ca3 = parseInt(card3)
+            let ca4 = parseInt(card4)
+            let bNum = ca1 + ca2
+            let uNum = ca3 + ca4
+            if(bNum > 21) { // If bot is over 21 and user is equal to or less than 21
+                if(uNum <= 21) {
+                bot.createMessage(msg.channel.id, {
+                    embed: {
+                        title: `${msg.author.username} won!`,
+                        color: 0x33a1c9,
+                        fields: [
+                            {
+                                name: bot.user.username + "'s Hand",
+                                value: `${bNum}`,
+                                inline: true
+                            },
+                            {
+                                name: msg.author.username + "'s Hand",
+                                value: `${uNum}`,
+                                inline: true
+                            },
+                        ],
+                        footer: {
+                            }
+                        }
+                    });
+                } else {
+                    if(bNum <= 21) { //If the user is over 21 and the bot is equal to or less than
+                    bot.createMessage(msg.channel.id, {
+                        embed: {
+                            title: `${bot.user.username} won!`,
+                            color: 0x33a1c9,
+                            fields: [
+                                {
+                                    name: bot.user.username + "'s Hand",
+                                    value: `${bNum}`,
+                                    inline: true
+                                },
+                                {
+                                    name: msg.author.username + "'s Hand",
+                                    value: `${uNum}`,
+                                    inline: true
+                                },
+                            ],
+                            footer: {
+                                }
+                            }
+                        });
+                } else {
+                    if(bNum > 21) { // If user and bot are over 21
+                        if(uNum > 21) {
+                            bot.createMessage(msg.channel.id, {
+                                embed: {
+                                    title: `Draw!`,
+                                    color: 0x33a1c9,
+                                    fields: [
+                                        {
+                                            name: bot.user.username + "'s Hand",
+                                            value: `${bNum}`,
+                                            inline: true
+                                        },
+                                        {
+                                            name: msg.author.username + "'s Hand",
+                                            value: `${uNum}`,
+                                            inline: true
+                                        },
+                                    ],
+                                    footer: {
+                                        }
+                                    }
+                                });
+                        }
+                    } else {
+                        if(uNum = 21) { // If user's number is 21 and the bot number is less than 21
+                            if(bNum < 21) {
+                                bot.createMessage(msg.channel.id, {
+                                    embed: {
+                                        title: `${msg.author.username} won!`,
+                                        color: 0x33a1c9,
+                                        fields: [
+                                            {
+                                                name: bot.user.username + "'s Hand",
+                                                value: `${bNum}`,
+                                                inline: true
+                                            },
+                                            {
+                                                name: msg.author.username + "'s Hand",
+                                                value: `${uNum}`,
+                                                inline: true
+                                            },
+                                        ],
+                                        footer: {
+                                            }
+                                        }
+                                    });
+                            } else {
+                                if(uNum < 21) { // If bot's number is 21 and the user number is less than 21
+                                    if(bNum = 21) {
+                                        bot.createMessage(msg.channel.id, {
+                                            embed: {
+                                                title: `${bot.user.username} won!`,
+                                                color: 0x33a1c9,
+                                                fields: [
+                                                    {
+                                                        name: bot.user.username + "'s Hand",
+                                                        value: `${bNum}`,
+                                                        inline: true
+                                                    },
+                                                    {
+                                                        name: msg.author.username + "'s Hand",
+                                                        value: `${uNum}`,
+                                                        inline: true
+                                                    },
+                                                ],
+                                                footer: {
+                                                    }
+                                                }
+                                            });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }   
+});
