@@ -1,0 +1,23 @@
+bot.on('messageCreate', (msg) => {
+    if(msg.content === prefix + "trivia") {
+        let triviaRandom = trivia.shuffle().random()
+        console.log(`tR: ${triviaRandom}`)
+        let triviaQuestion = triviaRandom.split(/ - /g).shift()
+        console.log(`tQ: ${triviaQuestion}`)
+        let intParse = parseInt(triviaRandom.length)
+        let triviaWrong = triviaRandom.slice(triviaQuestion.length, intParse + 3).split(/ - /g)
+        console.log(`tW: ${triviaWrong}`)
+
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                title: `${triviaQuestion}`,
+                description: `check the damn __CONSOLE__`,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                }
+            }
+        })
+    }
+})
