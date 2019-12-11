@@ -4,10 +4,8 @@ bot.on('messageCreate', (msg) => {
         console.log(`tR: ${triviaRandom}`)
         let triviaQuestion = triviaRandom.split(/ - /g).shift()
         console.log(`tQ: ${triviaQuestion}`)
-        let intParse = parseInt(triviaRandom.length)
-        let triviaWrong = triviaRandom.slice(triviaQuestion.length, intParse + 3).split(/ - /g)
-        console.log(`tW: ${triviaWrong}`)
-
+        let triviaWrong = triviaRandom.slice(triviaQuestion.length, triviaRandom.length).split(/ - /g)
+        console.log(triviaWrong)
         bot.createMessage(msg.channel.id, {
             embed: {
                 title: `${triviaQuestion}`,
