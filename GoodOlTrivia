@@ -19,3 +19,22 @@ bot.on('messageCreate', (msg) => {
         })
     }
 })
+
+// Post-Realization of my over complicated command
+
+bot.on('messageCreate', (msg) => {
+    if(msg.content === prefix+'trv') {
+        let ran = trv.random()
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                title: ran.question,
+                description: `- ${ran.choiceA}\n- ${ran.choiceB}\n- ${ran.choiceC}\n- ${ran.choiceD}`,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                }
+            }
+        })
+    }
+})
