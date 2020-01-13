@@ -1,0 +1,17 @@
+bot.on('messageCreate', async(msg) => {
+    if(msg.content === prefix + "edit") {
+        console.log(msg.author.avatar)
+        const buffer = await fetch(msg.author.avatarURL).then(res => res.buffer())
+        let avt = msg.author.avatarURL
+        Jimp.read(avt).then(image => {
+            image.greyscale();
+            console.log(chalk.blue(image.greyscale().bitmap))
+            bot.createMessage(msg.channel.id, "Your avatar:", {file: buffer, name: "avatar.png" })
+        })
+    }
+})
+
+/*
+Need to contiue working on the command.
+Specifically needs npmjs' "mime" for image buffer
+*/
