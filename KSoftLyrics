@@ -1,0 +1,69 @@
+bot.on("messageCreate", (msg) => {
+    if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+    let args = msg.content.split(/ +/);
+    let command = args.shift();
+    const msgContent = msg.content.toString().toLowerCase();     
+    if(command.toLowerCase() === prefix+"lyrics") {
+     const toSay = args.join(" ");
+     let checktoSay = toSay.includes('https://discord.gg/')
+     let checktoSay2 = toSay.includes('discord.gg/')
+     if(checktoSay == true) { 
+         bot.createMessage(msg.channel.id, "Sorry! Your message was blocked by the developer!");
+    } else {
+        if(checktoSay2 == true) {
+            bot.createMessage(msg.channel.id, "Sorry! Your message was blocked by the developer!")
+        } else {
+     bot.createMessage(msg.channel.id, "Give me a moment to look for `" + toSay + "`...").then( async(m) => {
+    ksoft.lyrics.get(toSay, {textOnly: false}).then((muLy) => {
+        console.log(muLy)
+        let musicLyrics = muLy.lyrics
+        let musicName = muLy.name
+        if(musicLyrics.length > 2048) {
+        let music1 = musicLyrics.slice(0, 2048)
+        let music2 = musicLyrics.slice(2048)
+        m.edit("Done! Here's what I found for `" + toSay + "`!")
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                title: musicName,
+                description: music1,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                }
+            }
+        })
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                description: music2,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                    text: "Powered by KSoft.Si API!"
+                }
+            }
+        })
+    } else {
+        m.edit("Done! Here's what I found for `" + toSay + "`!")
+    bot.createMessage(msg.channel.id, {
+        embed: {
+            title: musicName,
+            description: musicLyrics,
+            color: 0x33a1c9,
+            fields: [
+            ],
+            footer: {
+                text: "Powered by KSoft.Si API!"
+            }
+        }
+    })
+    } 
+}).catch((error) => {
+    bot.createMessage(msg.channel.id, "I couldn't find the song you asked for! Maybe try again with a different message?")
+})
+})
+}
+}
+}
+});
