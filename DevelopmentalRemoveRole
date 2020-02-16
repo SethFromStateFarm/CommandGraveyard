@@ -1,0 +1,40 @@
+bot.on("messageCreate", async(msg) => {
+    if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+    let args = msg.content.split(/ +/);
+    let command = args.shift();
+    const msgContent = msg.content.toString().toLowerCase();     
+    if(command.toLowerCase() === prefix+"removerole") {
+        if(msg.channel.guild.members.get(msg.author.id).permission.has("manageRoles") == true){  
+            if(msg.channel.guild.members.get(bot.user.id).permission.has("manageRoles") == true){      
+     const toSay = args.join(" ");
+     if(toSay == 0) return bot.createMessage(msg.channel.id, "You need to provide something for me to say!")
+     let user = args[0]
+        let serverMember = msg.channel.guild.members.get(user)
+        if(!serverMember) return bot.createMessage(msg.channel.id, "You need to provide a `User ID` for me to remove the role from them!")
+        let role = toSay.slice(user.length+1, toSay.length)
+        let serverRole = msg.channel.guild.roles.find(rl => rl.name === role)
+        if(!serverRole) return bot.createMessage(msg.channel.id, "You need to provide a valid `Role Name` for me to remove from the member!")
+        let finder = await msg.channel.guild.members.get(bot.user.id).roles.pop()
+        console.log(finder)
+        let botRole = msg.channel.guild.roles.find(r => r.id === finder)
+        console.log(botRole.position)
+        console.log(serverRole.position)
+        if(botRole.position < serverRole.position) return bot.createMessage(msg.channel.id, "The `" + serverRole.name + "` role is higher than my highest role, `" + botRole.name + "`, so I cannot take if from anyone.")
+        if(!serverMember.roles.includes(serverRole.id)) return bot.createMessage(msg.channel.id, "This user doesn't have the **" + serverRole.name + "** role!")
+        serverMember.removeRole(serverRole.id).catch((error) => { 
+        bot.createMessage(msg.channel.id, "It doesn't look like I have the ability to remove the user's role. Is their role highest than my own?")
+        })
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                title: `Removed the ${serverRole.name} role from ${serverMember.username}#${serverMember.discriminator}!`,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                }
+            }
+        })
+    }
+    }
+}   
+});
