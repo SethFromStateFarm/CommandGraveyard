@@ -1,0 +1,38 @@
+bot.on("messageCreate", async(msg) => {
+    if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+    let args = msg.content.split(/ +/);
+    let command = args.shift();
+    const msgContent = msg.content.toString().toLowerCase();     
+    if(command.toLowerCase() === prefix+"addrole") {
+        if(msg.channel.guild.members.get(msg.author.id).permission.has("manageRoles") == true){  
+            if(msg.channel.guild.members.get(bot.user.id).permission.has("manageRoles") == true){      
+     const toSay = args.join(" ");
+     if(toSay == 0) return bot.createMessage(msg.channel.id, "You need to provide something for me to say!")
+     let user = args[0]
+        let serverMember = msg.channel.guild.members.get(user)
+        if(!serverMember) return bot.createMessage(msg.channel.id, "You need to provide a `User ID` for me to add a role to them!")
+        let role = toSay.slice(user.length+1, toSay.length)
+        console.log(role)
+        let serverRole = msg.channel.guild.roles.find(rl => rl.name === role)
+        if(!serverRole) return bot.createMessage(msg.channel.id, "You need to provide a valid `Role Name` for me to add to the member!")
+        let pos = await msg.channel.guild.members.get(bot.user.id).roles.length
+        let finder = await msg.channel.guild.members.get(bot.user.id).roles[pos]
+        console.log(finder)
+        let botRole = msg.channel.guild.roles.find(r => r.id === finder)
+        if(serverRole.position > botRole.position) return bot.createMessage(msg.channel.id, "The `" + serverRole.name + "` role is higher than my highest role, `" + botRole.name + "`, so I cannot give it to anyone.")
+        if(serverMember.roles.includes(serverRole.id)) return bot.createMessage(msg.channel.id, "This user already has the **" + serverRole.name + "** role!")
+        serverMember.addRole(serverRole.id)
+        bot.createMessage(msg.channel.id, {
+            embed: {
+                title: `Gave ${serverMember.username}#${serverMember.discriminator} the ${serverRole.name} role!`,
+                color: 0x33a1c9,
+                fields: [
+                ],
+                footer: {
+                }
+            }
+        })
+    }   
+}
+}
+});
