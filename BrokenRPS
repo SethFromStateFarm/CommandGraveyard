@@ -1,0 +1,150 @@
+bot.on('messageCreate', (msg) => {
+    if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+    if(msg.content === prefix + "rps") {
+        let rol = msg.channel.guild.roles.find(rl => rl.name === 'Disable Fun')
+        if(!rol || !msg.channel.guild.members.get(bot.user.id).roles.includes(rol.id)) {
+            let ran = rps.shuffle().random()
+            bot.createMessage(msg.channel.id, "**Choose one!**\n:moyai: *Rock*\n📄 *Paper*\n:scissors: *Scissors*").then(async(m) => {
+                bot.addMessageReaction(msg.channel.id, m.id, "🗿");
+                bot.addMessageReaction(msg.channel.id, m.id, "📄");
+                bot.addMessageReaction(msg.channel.id, m.id, "✂️");
+                const reactionListener = new ReactionHandler.continuousReactionStream(m, (userID) => userID === msg.author.id, false, {maxMatches: 1, time: 15000});
+                let timer = setTimeout(() => {bot.createMessage(msg.channel.id, "Times up! Try to answer within the span of `15 seconds`!")}, 15000)
+                reactionListener.on('reacted', (event) => { // event.emoji.name
+                    clearTimeout(timer)
+                    if(event.emoji.name === ran.emoji) {
+                        let color = hex.shuffle().random()
+                        let emote;
+                        switch(event.emoji.name) {
+                            case('🗿'):
+                                emote = '🗿';
+                                bot.createMessage(msg.channel.id, {
+                                    embed: {
+                                        title: "Draw!",
+                                        description: `**Your choice: \`${emote} Rock\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                        color: color,
+                                        fields: [
+                                        ],
+                                        footer: {
+                                        }
+                                    }
+                                })
+                                break;
+                            case('📄'):
+                                emote = '📄';
+                                bot.createMessage(msg.channel.id, {
+                                    embed: {
+                                        title: "Draw!",
+                                        description: `**Your choice: \`${emote} Paper\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                        color: color,
+                                        fields: [
+                                        ],
+                                        footer: {
+                                        }
+                                    }
+                                })
+                                break;
+                            case('✂️'):
+                                emote = '✂️';
+                                bot.createMessage(msg.channel.id, {
+                                    embed: {
+                                        title: "Draw!",
+                                        description: `**Your choice: \`${emote} Scissors\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                        color: color,
+                                        fields: [
+                                        ],
+                                        footer: {
+                                        }
+                                    }
+                                })
+                                break;
+                        }
+                    } else if(event.emoji.name === '📄' && ran.emoji === '✂️') {
+                            bot.createMessage(msg.channel.id, {
+                                embed: {
+                                    title: "I win!",
+                                    description: `**Your choice: \`📄 Paper\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                    color: color,
+                                    fields: [
+                                    ],
+                                    footer: {
+                                    }
+                                }
+                            })         
+                    } else if(event.emoji.name === '🗿' && ran.emoji === '📄') {
+                        bot.createMessage(msg.channel.id, {
+                            embed: {
+                                title: "I win!",
+                                description: `**Your choice: \`🗿 Rock\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                color: color,
+                                fields: [
+                                ],
+                                footer: {
+                                }
+                            }
+                        })    
+                    } else if(event.emoji.name === '✂️' && ran.emoji === '🗿') {
+                        bot.createMessage(msg.channel.id, {
+                            embed: {
+                                title: "I win!",
+                                description: `**Your choice: \`✂️ Scissors\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                color: color,
+                                fields: [
+                                ],
+                                footer: {
+                                }
+                            }
+                        })         
+                    } else if(event.emoji.name === '📄' && ran.emoji === '🗿') {
+                        bot.createMessage(msg.channel.id, {
+                            embed: {
+                                title: "You win!",
+                                description: `**Your choice: \`📄 Paper\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                color: color,
+                                fields: [
+                                ],
+                                footer: {
+                                }
+                            }
+                        })             
+                    } else if(event.emoji.name === '🗿' && ran.emoji === '✂️') {
+                            bot.createMessage(msg.channel.id, {
+                                embed: {
+                                    title: "You win!",
+                                    description: `**Your choice: \`🗿 Rock\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                    color: color,
+                                    fields: [
+                                    ],
+                                    footer: {
+                                    }
+                                }
+                            })  
+                    } else if(event.emoji.name === '✂️' && ran.emoji === '📄') {
+                        bot.createMessage(msg.channel.id, {
+                            embed: {
+                                title: "You win!",
+                                description: `**Your choice: \`✂️ Scissors\`\nMy choice: \`${ran.emoji} ${ran.choice}\`**`,
+                                color: color,
+                                fields: [
+                                ],
+                                footer: {
+                                }
+                            }
+                        }) 
+                    }
+                })
+            })
+        } else {
+            bot.createMessage(msg.channel.id, {
+                embed: {
+                    title: `:warning: This command has been disabled by the owner!`,
+                    color: 0xfc3333,
+                    fields: [
+                    ],
+                    footer: {
+                    }
+                }
+            })
+        }
+    }
+})
